@@ -158,6 +158,7 @@ export function SalaryCalculator() {
             {/* Calculate button */}
             {!revealed && (
               <button
+                suppressHydrationWarning
                 onClick={handleCalculate}
                 className="btn-electric w-full py-4 rounded-xl font-display font-semibold text-base cursor-none"
               >
@@ -236,12 +237,13 @@ export function SalaryCalculator() {
 
                   <div className="flex gap-3">
                     <button
+                      suppressHydrationWarning
                       onClick={handleReset}
                       className="btn-ghost-border flex-1 py-3 rounded-xl text-sm font-display cursor-none"
                     >
                       Try Another Role
                     </button>
-                    <button className="btn-electric flex-1 py-3 rounded-xl text-sm font-display cursor-none">
+                    <button suppressHydrationWarning className="btn-electric flex-1 py-3 rounded-xl text-sm font-display cursor-none">
                       Get Full Salary Guide →
                     </button>
                   </div>

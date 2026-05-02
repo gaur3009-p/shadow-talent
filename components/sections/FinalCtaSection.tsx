@@ -66,7 +66,7 @@ export function FinalCtaSection({ userMode }: FinalCtaSectionProps) {
                   </li>
                 ))}
               </ul>
-              <button className="btn-electric w-full py-4 rounded-xl font-display font-semibold cursor-none">
+              <button suppressHydrationWarning className="btn-electric w-full py-4 rounded-xl font-display font-semibold cursor-none">
                 Book a Hiring Call →
               </button>
             </div>
@@ -104,7 +104,7 @@ export function FinalCtaSection({ userMode }: FinalCtaSectionProps) {
                   </li>
                 ))}
               </ul>
-              <button className="w-full py-4 rounded-xl font-display font-semibold border border-neon/30 bg-neon/5 text-neon hover:bg-neon/10 transition-all cursor-none">
+              <button suppressHydrationWarning className="w-full py-4 rounded-xl font-display font-semibold border border-neon/30 bg-neon/5 text-neon hover:bg-neon/10 transition-all cursor-none">
                 Register as a Candidate →
               </button>
             </div>

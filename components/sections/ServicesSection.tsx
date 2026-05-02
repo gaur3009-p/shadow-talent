@@ -219,10 +219,10 @@ export function ServicesSection() {
 
                 {/* CTA */}
                 <div className="flex gap-3">
-                  <button className="btn-electric flex-1 py-3 rounded-xl font-display text-sm cursor-none">
+                  <button suppressHydrationWarning className="btn-electric flex-1 py-3 rounded-xl font-display text-sm cursor-none">
                     See All {activeService.title} Roles →
                   </button>
-                  <button className="btn-ghost-border px-4 py-3 rounded-xl font-display text-sm cursor-none">
+                  <button suppressHydrationWarning className="btn-ghost-border px-4 py-3 rounded-xl font-display text-sm cursor-none">
                     Get Salary Guide
                   </button>
                 </div>

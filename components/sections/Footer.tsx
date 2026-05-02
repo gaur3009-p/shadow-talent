@@ -40,6 +40,7 @@ export function Footer() {
             <div className="flex gap-4">
               {["𝕏", "in", "◉"].map((icon) => (
                 <button
+                  suppressHydrationWarning
                   key={icon}
                   className="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-chalk-dim hover:text-chalk hover:border-electric/30 transition-all text-sm cursor-none"
                 >

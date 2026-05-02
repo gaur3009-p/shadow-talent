@@ -83,7 +83,7 @@ export function Navbar({ userMode, setUserMode }: NavbarProps) {
             ))}
           </div>
 
-          <button className="btn-electric hidden md:flex px-4 py-2 rounded-full text-sm cursor-none">
+          <button suppressHydrationWarning className="btn-electric hidden md:flex px-4 py-2 rounded-full text-sm cursor-none">
             Get Started →
           </button>
 
@@ -136,7 +136,7 @@ export function Navbar({ userMode, setUserMode }: NavbarProps) {
                   </button>
                 ))}
               </div>
-              <button className="btn-electric w-full py-3 rounded-xl font-display text-sm">
+              <button suppressHydrationWarning className="btn-electric w-full py-3 rounded-xl font-display text-sm">
                 Get Started →
               </button>
             </div>

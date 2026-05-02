@@ -1,22 +1,18 @@
-"use client";
-
-import { Suspense, lazy, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-
-// Lazy-load Spline to avoid blocking initial render
-const Spline = lazy(() => import("@splinetool/react-spline"));
 
 interface HeroSectionProps {
   userMode: "recruiter" | "candidate";
 }
 
 /**
- * HeroSection — full-screen immersive hero.
- * Uses a Spline 3D scene in the background (lazy loaded).
- * Headline and CTAs change based on recruiter vs candidate mode.
+ * HeroSection — full-screen animated hero using Canvas + CSS.
+ * Spline removed: it requires browser globals at import time which
+ * breaks Next.js SSR regardless of dynamic() usage in some setups.
+ * Replaced with a particle/orb canvas animation that looks equally premium.
  */
 export function HeroSection({ userMode }: HeroSectionProps) {
-  const [splineLoaded, setSplineLoaded] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const copy = {
     recruiter: {
@@ -44,44 +40,125 @@ export function HeroSection({ userMode }: HeroSectionProps) {
   };
 
   const c = copy[userMode];
-
-  // Pipeline steps for the animated flow visualization
   const steps = ["Company", "Brief", "Matching", "Candidates", "Hired ✓"];
+
+  // ── Particle Canvas ────────────────────────────────────
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let W = 0, H = 0;
+
+    const resize = () => {
+      W = canvas.width = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Orbs
+    type Orb = { x: number; y: number; r: number; vx: number; vy: number; hue: number; alpha: number };
+    const orbs: Orb[] = Array.from({ length: 6 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: 180 + Math.random() * 200,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      hue: Math.random() > 0.5 ? 234 : 170, // electric or neon
+      alpha: 0.06 + Math.random() * 0.08,
+    }));
+
+    // Nodes (connection graph)
+    type Node = { x: number; y: number; vx: number; vy: number };
+    const nodes: Node[] = Array.from({ length: 40 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+
+      // Draw orbs
+      orbs.forEach((o) => {
+        o.x += o.vx;
+        o.y += o.vy;
+        if (o.x < -o.r) o.x = W + o.r;
+        if (o.x > W + o.r) o.x = -o.r;
+        if (o.y < -o.r) o.y = H + o.r;
+        if (o.y > H + o.r) o.y = -o.r;
+
+        const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+        g.addColorStop(0, `hsla(${o.hue}, 90%, 65%, ${o.alpha})`);
+        g.addColorStop(1, `hsla(${o.hue}, 90%, 65%, 0)`);
+        ctx.beginPath();
+        ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+      });
+
+      // Draw node connections
+      nodes.forEach((n) => {
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < 0 || n.x > W) n.vx *= -1;
+        if (n.y < 0 || n.y > H) n.vy *= -1;
+      });
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.strokeStyle = `rgba(91,110,245,${0.15 * (1 - dist / 120)})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+        // Node dot
+        ctx.beginPath();
+        ctx.arc(nodes[i].x, nodes[i].y, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(91,110,245,0.4)";
+        ctx.fill();
+      }
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* ── Spline 3D Background ─────────────────────────── */}
-      <div className="absolute inset-0 z-0 opacity-60">
-        <Suspense
-          fallback={
-            <div className="absolute inset-0 bg-gradient-mesh" />
-          }
-        >
-          <Spline
-            scene="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode"
-            onLoad={() => setSplineLoaded(true)}
-            className="w-full h-full"
-          />
-        </Suspense>
+      {/* ── Canvas Background ─────────────────────────────── */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full z-0"
+        style={{ opacity: 0.9 }}
+      />
 
-        {/* Fallback gradient mesh (always visible, fades when Spline loads) */}
-        <div
-          className={`absolute inset-0 bg-gradient-mesh transition-opacity duration-1000 ${
-            splineLoaded ? "opacity-0" : "opacity-100"
-          }`}
-        />
-      </div>
+      {/* Radial vignette */}
+      <div className="absolute inset-0 z-[1] bg-gradient-radial from-transparent via-obsidian/40 to-obsidian/95 pointer-events-none" />
 
-      {/* Radial gradient to darken edges */}
-      <div className="absolute inset-0 z-1 bg-gradient-radial from-transparent via-obsidian/30 to-obsidian/90 pointer-events-none" />
-
-      {/* Bottom fade to connect with next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-obsidian to-transparent z-10 pointer-events-none" />
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-obsidian to-transparent z-10 pointer-events-none" />
 
       {/* ── Hero Content ─────────────────────────────────── */}
-      <div className="relative z-20 max-w-7xl mx-auto px-6 pt-24 pb-16 w-full">
+      <div className="relative z-20 max-w-7xl mx-auto px-6 pt-28 pb-20 w-full">
         <div className="max-w-3xl">
-          {/* Eyebrow badge */}
+          {/* Eyebrow */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -89,11 +166,11 @@ export function HeroSection({ userMode }: HeroSectionProps) {
             className="inline-flex items-center gap-2 mb-6"
           >
             <div className="glass-card px-4 py-2 rounded-full text-sm text-chalk-dim font-medium border border-electric/20">
-              <span>{c.eyebrow}</span>
+              {c.eyebrow}
             </div>
           </motion.div>
 
-          {/* Main headline */}
+          {/* Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -121,17 +198,17 @@ export function HeroSection({ userMode }: HeroSectionProps) {
             {c.description}
           </motion.p>
 
-          {/* CTA Buttons */}
+          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
             className="flex flex-col sm:flex-row gap-4 mb-10"
           >
-            <button className="btn-electric px-8 py-4 rounded-xl font-display text-base font-semibold cursor-none">
+            <button suppressHydrationWarning className="btn-electric px-8 py-4 rounded-xl font-display text-base font-semibold cursor-none">
               {c.cta1}
             </button>
-            <button className="btn-ghost-border px-8 py-4 rounded-xl font-display text-base cursor-none">
+            <button suppressHydrationWarning className="btn-ghost-border px-8 py-4 rounded-xl font-display text-base cursor-none">
               {c.cta2}
             </button>
           </motion.div>
@@ -141,14 +218,14 @@ export function HeroSection({ userMode }: HeroSectionProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="flex items-center gap-2 text-sm text-chalk-dim"
+            className="flex items-center gap-2 text-sm"
           >
             <span className="w-2 h-2 rounded-full bg-neon animate-ping" />
             <span className="text-neon font-medium">{c.badge}</span>
           </motion.div>
         </div>
 
-        {/* ── Pipeline Flow Visualizer ──────────────────── */}
+        {/* ── Pipeline Flow ─────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -190,7 +267,7 @@ export function HeroSection({ userMode }: HeroSectionProps) {
         </motion.div>
       </div>
 
-      {/* Scan line effect */}
+      {/* Scan line */}
       <div className="scan-line z-5 pointer-events-none" />
     </section>
   );

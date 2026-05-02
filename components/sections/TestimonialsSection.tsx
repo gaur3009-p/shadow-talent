@@ -156,6 +156,7 @@ export function TestimonialsSection() {
         <div className="flex justify-center gap-2 mb-12">
           {testimonials.map((_, i) => (
             <button
+              suppressHydrationWarning
               key={i}
               onClick={() => goTo(i)}
               className={`rounded-full transition-all duration-300 cursor-none ${

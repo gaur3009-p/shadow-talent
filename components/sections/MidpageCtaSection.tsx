@@ -87,7 +87,7 @@ export function MidpageCtaSection({ userMode }: MidpageCtaSectionProps) {
               transition={{ delay: 0.4 }}
               className="flex flex-col items-center gap-3"
             >
-              <button className="btn-electric px-10 py-4 rounded-xl font-display font-semibold text-base cursor-none animate-pulse-glow">
+              <button suppressHydrationWarning className="btn-electric px-10 py-4 rounded-xl font-display font-semibold text-base cursor-none animate-pulse-glow">
                 {c.cta}
               </button>
               <span className="text-chalk-dim/50 text-sm font-mono">

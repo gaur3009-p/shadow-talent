@@ -115,10 +115,10 @@ export function LiveJobCounter() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <button className="btn-electric px-10 py-4 rounded-xl font-display font-semibold text-base cursor-none mr-4">
+          <button suppressHydrationWarning className="btn-electric px-10 py-4 rounded-xl font-display font-semibold text-base cursor-none mr-4">
             Browse All Roles →
           </button>
-          <button className="btn-ghost-border px-8 py-4 rounded-xl font-display text-base cursor-none">
+          <button suppressHydrationWarning className="btn-ghost-border px-8 py-4 rounded-xl font-display text-base cursor-none">
             Upload CV
           </button>
         </motion.div>

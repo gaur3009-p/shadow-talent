@@ -176,7 +176,7 @@ export function HiringSpeedVisualizer() {
             <p className="text-chalk-dim text-sm">
               Ready to slash your time-to-hire?
             </p>
-            <button className="btn-electric px-6 py-3 rounded-xl font-display text-sm cursor-none">
+            <button suppressHydrationWarning className="btn-electric px-6 py-3 rounded-xl font-display text-sm cursor-none">
               Start Hiring in 7 Days →
             </button>
           </div>
