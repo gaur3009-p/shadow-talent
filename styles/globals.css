@@ -1,0 +1,311 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Custom Font Imports ─────────────────────────────── */
+@import url("https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&f[]=satoshi@300,400,500,700&display=swap");
+
+/* ─── CSS Variables ───────────────────────────────────── */
+:root {
+  --obsidian: #0a0a0f;
+  --obsidian-2: #0f0f17;
+  --obsidian-3: #15151f;
+  --electric: #5b6ef5;
+  --electric-dim: #3d4fc0;
+  --neon: #00ffb2;
+  --neon-dim: #00cc8e;
+  --chalk: #f0ede8;
+  --chalk-dim: #b8b4ae;
+  --crimson: #ff3d5a;
+  --amber: #ffb547;
+
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-hover: rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Base Resets ─────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles this */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--obsidian);
+  color: var(--chalk);
+  font-family: "Satoshi", system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ─── Lenis Smooth Scroll ────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ─── Custom Scrollbar ───────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--obsidian);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--electric);
+  border-radius: 2px;
+}
+
+/* ─── Typography Utilities ───────────────────────────── */
+.font-display {
+  font-family: "Clash Display", sans-serif;
+}
+
+/* ─── Grain Overlay ──────────────────────────────────── */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ─── Glass Card ─────────────────────────────────────── */
+.glass-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+.glass-card:hover {
+  background: var(--glass-hover);
+  border-color: var(--border-hover);
+}
+
+/* ─── Glow Effects ───────────────────────────────────── */
+.glow-electric {
+  box-shadow: 0 0 30px rgba(91, 110, 245, 0.3),
+    0 0 60px rgba(91, 110, 245, 0.15);
+}
+.glow-neon {
+  box-shadow: 0 0 30px rgba(0, 255, 178, 0.3), 0 0 60px rgba(0, 255, 178, 0.15);
+}
+.text-glow-electric {
+  text-shadow: 0 0 30px rgba(91, 110, 245, 0.6);
+}
+.text-glow-neon {
+  text-shadow: 0 0 30px rgba(0, 255, 178, 0.6);
+}
+
+/* ─── Gradient Text ──────────────────────────────────── */
+.gradient-text-electric {
+  background: linear-gradient(135deg, #5b6ef5 0%, #a78bfa 50%, #00ffb2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-neon {
+  background: linear-gradient(135deg, #00ffb2 0%, #5b6ef5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Noise Texture ──────────────────────────────────── */
+.noise-texture {
+  position: relative;
+}
+.noise-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Grid Pattern ───────────────────────────────────── */
+.grid-pattern {
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ─── Scan Line Animation ────────────────────────────── */
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(91, 110, 245, 0.4),
+    transparent
+  );
+  animation: scanLine 4s linear infinite;
+}
+
+/* ─── CTA Button Styles ──────────────────────────────── */
+.btn-electric {
+  background: var(--electric);
+  color: white;
+  border: none;
+  font-family: "Clash Display", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-electric::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.btn-electric:hover {
+  background: #6b7ef8;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(91, 110, 245, 0.5);
+}
+
+.btn-electric:hover::before {
+  opacity: 1;
+}
+
+.btn-ghost-border {
+  background: transparent;
+  border: 1px solid var(--border-hover);
+  color: var(--chalk);
+  font-family: "Clash Display", sans-serif;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-ghost-border:hover {
+  border-color: var(--electric);
+  color: var(--electric);
+  background: rgba(91, 110, 245, 0.05);
+}
+
+/* ─── Marquee Track ──────────────────────────────────── */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.marquee-track-reverse {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite reverse;
+}
+
+/* ─── Section Divider ────────────────────────────────── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(91, 110, 245, 0.3),
+    transparent
+  );
+}
+
+/* ─── Floating Badge ─────────────────────────────────── */
+.floating-badge {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* ─── Cursor Dot (Global Custom Cursor) ──────────────── */
+#cursor-dot {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--electric);
+  pointer-events: none;
+  z-index: 99999;
+  transition: transform 0.1s;
+  mix-blend-mode: screen;
+}
+
+#cursor-ring {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(91, 110, 245, 0.5);
+  pointer-events: none;
+  z-index: 99998;
+  transition: transform 0.15s ease, width 0.2s, height 0.2s,
+    border-color 0.2s;
+  transform: translate(-50%, -50%);
+}
+
+/* ─── Progress Bar ───────────────────────────────────── */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--electric), var(--neon));
+  z-index: 99997;
+  transform-origin: left;
+  transition: width 0.1s linear;
+}
+
+/* ─── Spline Container ───────────────────────────────── */
+.spline-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.spline-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ─── Mobile Responsiveness ──────────────────────────── */
+@media (max-width: 768px) {
+  #cursor-dot,
+  #cursor-ring {
+    display: none;
+  }
+}
